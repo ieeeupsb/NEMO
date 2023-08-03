@@ -3,7 +3,7 @@
 <launch>
     <arg name="start_ign" default="true"/>
     <arg name="start_rviz" default="false"/>
-    <arg name="world" default="(dirname)/../worlds/RobotAtFactory_4_0_2023.world"/>
+    <arg name="world" default="$(dirname)/../worlds/RobotAtFactory_4_0_2023.world"/>
 
     <!-- Start Ignition Gazebo -->
     <group if="$(var start_ign)">
