@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="core" name="nemo_ps3_controller" exec="aruco_pose_estimator"/>
+</launch>
