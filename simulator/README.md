@@ -12,23 +12,16 @@ For reference:
 `sudo apt install ros-humble-desktop-full`
 will install all of ros2 and other useful applications.
 
-### Creating a ros2 workspace
 
-```bash
-mkdir nemo_ws/
-mkdir nemo_ws/src
-cd nemo_ws/src
-```
-You can now clone this package to the workspace with
+## Launch
 
-```bash
-git clone git@github.com:ieeeupsb/nemo_simulator.git
-```
-go to the `nemo_ws` folder with `cd ../` (assuming you are in `nemo_ws/src`) and build the ros2 packages:
-
-```bash
-colcon build
+```sh
+export IGN_GAZEBO_RESOURCE_PATH=/media/sf_NEMO/simulator/data/models:${IGN_GAZEBO_RESOURCE_PATH}
+source /opt/ros/humble/local_setup.sh
+ros2 launch launch/simulation.launch.xml
 ```
 
 # How to run nemo_simulator with a Docker Container
+
 In the future this might be a possibility to make the simulator more accessible.
+
