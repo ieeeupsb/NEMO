@@ -4,5 +4,10 @@
         <include>
             <uri>model://ground</uri>
         </include>
+        
+        <!-- Add the diffdrive model -->
+        <include>
+            <uri>model://diffdrive</uri>
+        </include>
     </world>
 </sdf>
