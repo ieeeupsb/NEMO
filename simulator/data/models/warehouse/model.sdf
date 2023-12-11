@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+    <model name="warehouse">
+        <link name="link">
+            <visual name="visual">
+                <pose>-4.8 4.1 0 0 0 0</pose>
+
+                <!-- Sky blue color -->
+                <material>
+                    <ambient>0.68 0.85 0.90</ambient>
+                    <diffuse>0 0 1</diffuse>
+                    <specular>0.1 0.1 0.1 1</specular>
+                </material>
+
+                <geometry>
+                    <mesh>
+                        <uri>model://warehouse/meshes/ratf_warehouse.stl</uri>
+                        <scale>0.01 0.01 0.01</scale>
+                    </mesh>
+                </geometry>
+            </visual>
+        </link>
+    </model>
+</sdf>
