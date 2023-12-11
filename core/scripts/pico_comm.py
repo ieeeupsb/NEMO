@@ -13,7 +13,8 @@ import argparse
 class MinimalSubscriber(Node):
     def __init__(self):
         super().__init__('minimal_subscriber')
-        self.ser = serial.Serial("/dev/ttyACM0", 115200)
+        # self.ser = serial.Serial("/dev/ttyACM0", 115200)
+        self.ser = serial.Serial("/dev/tty1", 115200)
         self.v, self.w = 0.0, 0.0
         # self.encoder_x = 0
         # self.encoder_y = 0

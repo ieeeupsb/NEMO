@@ -11,7 +11,8 @@ def set_v(ser, v):
 	
 
 if __name__ == '__main__':
-    ser = serial.Serial("/dev/ttyACM0", 115200)
+    # ser = serial.Serial("/dev/ttyACM0", 115200)
+    ser = serial.Serial("/dev/tty1", 115200)
     sleep(2)
     v = 0
     set_v(ser, v)
