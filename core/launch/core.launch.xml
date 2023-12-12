@@ -2,5 +2,5 @@
 
 <launch>
     <!-- <node pkg="core" name="nemo_ps3_controller" exec="aruco_pose_estimator"/> -->
-    <node pkg="core" name="nemo_communication" exec="pico_comm.py" />
+    <node pkg="core" name="nemo_communication" exec="pico_comm.py" output="screen" />
 </launch>

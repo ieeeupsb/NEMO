@@ -11,7 +11,7 @@ sudo apt install ros-humble-desktop-full python3 python3-pip
 pip install -r requirements.txt
 ```
 
-Also make sure the serial port `/dev/tty1` is available on your system.
+<!-- Also make sure the serial port `/dev/tty1` is available on your system. -->
 
 # Sourcing ROS 2:
 
@@ -55,3 +55,8 @@ Inside the simulation directory, run the following commands:
 export IGN_GAZEBO_RESOURCE_PATH="$(pwd)/data/models:${IGN_GAZEBO_RESOURCE_PATH}"
 ros2 launch launch/simulation.launch.xml
 ```
+
+## Testing
+
+To test movement messages sent to the robot, you can run the following command:
+`ros2 topic pub nemo_subscriber geometry_msgs/msg/Point "{x: 0.0, y: 0.0}"` (where x is the new linear velocity and y is the new angular velocity of the robot)
