@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <sdf version="1.9">
   <model name='diffdrive'>
     <pose>-4 0 0.325 0 0 0.0</pose>
@@ -232,7 +232,10 @@
       <right_joint>right_wheel_joint</right_joint>
       <wheel_separation>1.25</wheel_separation>
       <wheel_radius>0.3</wheel_radius>
-      <odom_publish_frequency>1</odom_publish_frequency>
+      <!-- 2 is once every 0.5sec -->
+      <odom_publish_frequency>2</odom_publish_frequency>
+      <!-- default odom topic name is /odom -->
+      <!-- <odom_topic>nemo_odometry</odom_topic> -->
     </plugin>
   </model>
 </sdf>

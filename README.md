@@ -52,11 +52,26 @@ ros2 launch core core.launch.xml
 Inside the simulation directory, run the following commands:
 
 ```sh
-export IGN_GAZEBO_RESOURCE_PATH="$(pwd)/data/models:${IGN_GAZEBO_RESOURCE_PATH}"
+export IGN_GAZEBO_RESOURCE_PATH="$(pwd)/data/models"
 ros2 launch launch/simulation.launch.xml
 ```
 
 ## Testing
 
-To test movement messages sent to the robot, you can run the following command:
-`ros2 topic pub nemo_subscriber geometry_msgs/msg/Point "{x: 0.0, y: 0.0}"` (where x is the new linear velocity and y is the new angular velocity of the robot)
+To test the robot's movement, there are a few messages you can publish:
+
+### Altering the robot's velocity
+
+```
+ros2 topic pub velocity_callback geometry_msgs/msg/Point "{x: 0.0, y: 0.0}"
+```
+
+In this message, x represents the new linear velocity while y represents the new angular velocity of the robot
+
+### Moving to a tile
+
+```
+ros2 topic pub nemo_move_to_tile std_msgs/msg/Int32 "data: id"
+```
+
+In this message, id represents the end tile of the robot (from left to right, top to bottom, starting from 0)
