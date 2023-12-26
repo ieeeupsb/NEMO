@@ -10,7 +10,7 @@
         </include>
 
         <include>
-            <uri>model://diffdrive</uri>
+            <uri>model://nemo</uri>
         </include>
 
         <light type="directional" name="sun">
