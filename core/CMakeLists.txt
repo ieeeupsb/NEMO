@@ -5,9 +5,13 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 # # GENERATE CUSTOM MESSAGES
@@ -16,26 +20,23 @@ find_package(rosidl_default_generators REQUIRED)
 #   DEPENDENCIES geometry_msgs # Add packages that above messages depend on
 # )
 
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+add_executable(moving_robot src/moving_robot.cpp)
 
-add_executable(hello_world src/hello_world.cpp)
-target_include_directories(hello_world PUBLIC
+ament_target_dependencies(moving_robot rclcpp geometry_msgs)
+
+target_include_directories(moving_robot PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(hello_world PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(moving_robot PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS hello_world
-  DESTINATION lib/${PROJECT_NAME})
-
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
+install(TARGETS 
+  moving_robot
+  DESTINATION lib/${PROJECT_NAME}
 )
 
-install(PROGRAMS
-  scripts/pico_comm.py
-  DESTINATION lib/${PROJECT_NAME}
+install(DIRECTORY 
+  launch
+  DESTINATION share/${PROJECT_NAME}
 )
 
 if(BUILD_TESTING)
