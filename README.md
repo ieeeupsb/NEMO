@@ -45,7 +45,6 @@ Inside the root directory, run the following command:
 
 ```sh
 ros2 launch core core.launch.xml
-ros2 run ros_gz_bridge parameter_bridge /model/nemo/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist
 ```
 
 ### Simulation

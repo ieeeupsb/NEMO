@@ -10,6 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -22,7 +23,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 add_executable(moving_robot src/moving_robot.cpp)
 
-ament_target_dependencies(moving_robot rclcpp geometry_msgs)
+ament_target_dependencies(moving_robot rclcpp geometry_msgs nav_msgs)
 
 target_include_directories(moving_robot PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
 <launch>
-    <!-- <node pkg="core" name="nemo_ps3_controller" exec="aruco_pose_estimator"/> -->
-    <node pkg="core" name="nemo_communication" exec="pico_comm.py" output="screen" />
+    <!-- NEMO -->
+    <node pkg="core" name="nemo" exec="moving_robot" output="screen" />
 </launch>
