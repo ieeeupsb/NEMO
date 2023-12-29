@@ -5,8 +5,9 @@ TabWidth: 4
 # Does (int) x instead of (int)x
 SpaceAfterCStyleCast: true
 AllowShortIfStatementsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
 AlignTrailingComments: true
 SpacesBeforeTrailingComments: 3
 # Use \n instead of \r\n
 UseCRLF: false
+ColumnLimit: 120

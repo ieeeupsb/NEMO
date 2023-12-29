@@ -5,8 +5,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 # Find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -21,17 +19,17 @@ find_package(rosidl_default_generators REQUIRED)
 #   DEPENDENCIES geometry_msgs # Add packages that above messages depend on
 # )
 
-add_executable(moving_robot src/moving_robot.cpp)
+add_executable(nemo_controller src/nemo_controller.cpp)
 
-ament_target_dependencies(moving_robot rclcpp geometry_msgs nav_msgs)
+ament_target_dependencies(nemo_controller rclcpp geometry_msgs nav_msgs)
 
-target_include_directories(moving_robot PUBLIC
+target_include_directories(nemo_controller PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(moving_robot PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(nemo_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 install(TARGETS 
-  moving_robot
+  nemo_controller
   DESTINATION lib/${PROJECT_NAME}
 )
 

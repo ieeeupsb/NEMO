@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
 <launch>
-    <!-- NEMO -->
-    <node pkg="core" name="nemo" exec="moving_robot" output="screen" />
+    <!-- NEMO controller -->
+    <node pkg="core" name="nemo" exec="nemo_controller" output="screen" />
 </launch>

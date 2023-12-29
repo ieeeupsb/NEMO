@@ -7,11 +7,8 @@
 
 	<!-- Start Ignition Gazebo -->
 	<group if="$(var start_ign)">
-		 <!-- Start ROS/Ignition Bridge -->
-		<node pkg="ros_gz_bridge" name="ros_gz_bridge" exec="parameter_bridge" output="screen">
-			<param name="twist" value="/model/nemo/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist"/>
-			<param name="odometry" value="/model/nemo/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry"/>
-		</node>
+		<!-- Start ROS/Ignition Bridge -->
+		<node pkg="ros_gz_bridge" name="ros_gz_bridge" exec="parameter_bridge" output="screen" args="/model/nemo/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist /model/nemo/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry" />
 
 		<include file="$(find-pkg-share ros_ign_gazebo)/launch/ign_gazebo.launch.py">
 			<arg name="gz_args" value="$(var world)"/>
