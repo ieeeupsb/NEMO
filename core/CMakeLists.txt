@@ -12,6 +12,7 @@ find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+find_package(image_transport REQUIRED)
 
 # # GENERATE CUSTOM MESSAGES
 # rosidl_generate_interfaces(${PROJECT_NAME}
@@ -21,7 +22,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 add_executable(nemo_controller src/nemo_controller.cpp)
 
-ament_target_dependencies(nemo_controller rclcpp geometry_msgs nav_msgs)
+ament_target_dependencies(nemo_controller rclcpp geometry_msgs nav_msgs image_transport)
 
 target_include_directories(nemo_controller PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

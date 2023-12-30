@@ -11,6 +11,14 @@ sudo apt install ros-humble-desktop-full python3 python3-pip
 pip install -r requirements.txt
 ```
 
+## Syntax highlighting for VSCode
+
+Inside the root directory, run the following command:
+
+```sh
+colcon build --build-base build_  --install-base install_ --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+```
+
 <!-- Also make sure the serial port `/dev/tty1` is available on your system. -->
 
 # Sourcing ROS 2:
@@ -75,3 +83,20 @@ ros2 topic pub nemo_move_to_tile std_msgs/msg/Int32 "data: id"
 ```
 
 In this message, id represents the end tile of the robot (from left to right, top to bottom, starting from 0)
+
+## To-do
+
+- [ ] Movement to specified coordinates
+- [ ] Movement to specified tile
+- [ ] Location
+- [ ] Pathfinding
+- [ ] Pick-up
+
+## Related work
+
+- https://github.com/rfzeg/rtab_dumpster
+- https://github.com/plusk01/aruco_localization
+- https://medium.com/@geetkal67/how-to-subscribe-to-ignition-gazebo-topics-using-ros2-8bcff7a0242e
+- https://medium.com/@junbs95/code-completion-and-debugging-for-ros2-in-vscode-a4ede900d979
+- https://answers.ros.org/question/403966/how-to-initialize-image_transport-using-rclcpp/
+- https://github.com/ros-perception/image_transport_tutorials
