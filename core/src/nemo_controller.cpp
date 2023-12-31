@@ -1,20 +1,28 @@
+#include "cv_bridge/cv_bridge.h"
 #include "geometry_msgs/msg/twist.hpp"
+#include "image_transport/image_transport.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "rclcpp/rclcpp.hpp"
 
 #include <cmath>
-#include <image_transport/image_transport.h>
 #include <memory>
+
+// OpenCV
+#include <opencv2/aruco.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/opencv.hpp>
 
 struct Position {
 	double x, y;
 };
 
-Position TILE_MAP[] = {{1.0, 0.5},	{2.5, 0.5},	 {4.0, 0.5},  {5.5, 0.5},  {8.0, 0.5},	{10.3, 0.5}, {12.7, 0.5},
-					   {15.0, 0.5}, {1.0, 2.5},	 {8.0, 2.5},  {10.3, 2.5}, {12.7, 2.5}, {15.0, 2.5}, {1.0, 4.0},
-					   {3.3, 4.0},	{5.7, 4.0},	 {8.0, 4.0},  {10.3, 4.0}, {12.7, 4.0}, {15.0, 4.0}, {1.0, 5.5},
-					   {3.3, 5.5},	{5.7, 5.5},	 {8.0, 5.5},  {15, 5.5},   {1.0, 7.5},	{3.3, 7.5},	 {5.7, 7.5},
-					   {8.0, 7.5},	{10.5, 7.5}, {12.0, 7.5}, {13.5, 7.5}, {15.0, 7.5}};
+Position MARKER_POSITIONS[] = {
+	{-695, 355},  {-545, 355},	{-395, 355},  {-245, 355},	{0, 355},	  {695, 355},	{0, 150},
+	{227, 150},	  {468, 150},	{695, 150},	  {-695, 0},	{-468, 0},	  {-227, 0},	{0, 0},
+	{227, 0},	  {468, 0},		{695, 0},	  {-695, -150}, {-468, -150}, {-227, -150}, {0, -150},
+	{-695, -355}, {0, -355},	{245, -355},  {395, -355},	{545, -355},  {695, -355},	{227, -355},
+	{468, -355},  {-468, -355}, {-227, -355}, {-695, 150},	{695, -150},
+};
 
 class NemoController : public rclcpp::Node {
   private:
@@ -53,7 +61,35 @@ class NemoController : public rclcpp::Node {
 	}
 
 	void cameraCallback(const sensor_msgs::msg::Image::ConstSharedPtr &msg) {
-		// TODO:
+		RCLCPP_INFO(this->get_logger(), "Camera callback");
+
+		// Initialize the ArUco dictionary
+		cv::aruco::Dictionary aruco_dict = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_5X5_250);
+		cv::Ptr<cv::aruco::Dictionary> ptr_aruco_dict = cv::makePtr<cv::aruco::Dictionary>(aruco_dict);
+
+		// Convert the ROS image message to an OpenCV image
+		cv_bridge::CvImagePtr cv_ptr;
+
+		try {
+			cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+		}
+
+		catch (cv_bridge::Exception &e) {
+			RCLCPP_ERROR(this->get_logger(), "cv_bridge exception: %s", e.what());
+
+			return;
+		}
+
+		// Detect the markers in the image
+		std::vector<int> marker_ids;
+		std::vector<std::vector<cv::Point2f>> marker_corners;
+
+		cv::aruco::detectMarkers(cv_ptr->image, ptr_aruco_dict, marker_corners, marker_ids);
+
+		// Print the detected markers
+		for (size_t i = 0; i < marker_ids.size(); i++) {
+			RCLCPP_INFO(this->get_logger(), "Detected marker: %d", marker_ids[i]);
+		}
 	}
 
 	void moveToPosition(double x, double y) {
@@ -63,7 +99,7 @@ class NemoController : public rclcpp::Node {
 
 		// Calculate the angle and distance to target
 		double target_angle = atan2(delta_y, delta_x);
-		double distance = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
+		// double distance = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
 
 		// Move robot
 		move(1.0, target_angle);
@@ -72,7 +108,7 @@ class NemoController : public rclcpp::Node {
 		location.x = x;
 		location.y = y;
 
-		RCLCPP_INFO(this->get_logger(), "Moving to tile: x=%d, y=%d", x, y);
+		RCLCPP_INFO(this->get_logger(), "Moving to tile: x=%f, y=%f", x, y);
 	}
 
 	void toggleMagnet() {
@@ -93,15 +129,13 @@ class NemoController : public rclcpp::Node {
 		publisher = this->create_publisher<geometry_msgs::msg::Twist>("/model/nemo/cmd_vel", 10);
 
 		// Initialize subscribers
-		odometry_subscription = this->create_subscription<nav_msgs::msg::Odometry>(
-			"/model/nemo/odometry", 10, std::bind(&NemoController::odomCallback, this, std::placeholders::_1));
+		// odometry_subscription = this->create_subscription<nav_msgs::msg::Odometry>(
+		// 	"/model/nemo/odometry", 10, std::bind(&NemoController::odomCallback, this, std::placeholders::_1));
 
 		camera_subscription = image_transport.subscribe(
-			"/model/nemo/camera", 1, std::bind(&NemoController::cameraCallback, this, std::placeholders::_1));
+			"/camera", 1, std::bind(&NemoController::cameraCallback, this, std::placeholders::_1));
 
 		RCLCPP_INFO(this->get_logger(), "Initialized NEMO controller node");
-
-		moveToPosition(12, 6);
 	}
 };
 

@@ -13,16 +13,24 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(image_transport REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
 
-# # GENERATE CUSTOM MESSAGES
-# rosidl_generate_interfaces(${PROJECT_NAME}
-#   "msg/pico_control.msg"
-#   DEPENDENCIES geometry_msgs # Add packages that above messages depend on
-# )
+include_directories(${OpenCV_INCLUDE_DIRS})
+link_directories(${OpenCV_LIBRARY_DIRS})
+add_definitions(${OpenCV_DEFINITIONS})
 
 add_executable(nemo_controller src/nemo_controller.cpp)
 
-ament_target_dependencies(nemo_controller rclcpp geometry_msgs nav_msgs image_transport)
+ament_target_dependencies(
+  nemo_controller 
+  rclcpp 
+  geometry_msgs 
+  nav_msgs 
+  image_transport 
+  cv_bridge
+  OpenCV
+)
 
 target_include_directories(nemo_controller PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
