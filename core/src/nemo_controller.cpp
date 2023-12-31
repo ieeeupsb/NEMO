@@ -1,8 +1,12 @@
 #include "cv_bridge/cv_bridge.h"
 #include "geometry_msgs/msg/twist.hpp"
 #include "image_transport/image_transport.hpp"
+#include "nav2_msgs/action/navigate_to_pose.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"
+#include "tf2/LinearMath/Quaternion.h"
+#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
 
 #include <cmath>
 #include <memory>
@@ -24,28 +28,22 @@ Position MARKER_POSITIONS[] = {
 	{468, -355},  {-468, -355}, {-227, -355}, {-695, 150},	{695, -150},
 };
 
+double MARKER_LENGTH = 0.06;
+
 class NemoController : public rclcpp::Node {
   private:
+	rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr goal_publisher;
 	rclcpp::Node::SharedPtr node_handle;
-	rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr publisher;
 	rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_subscription;
 
-	// Image transport
+	// Camera
 	image_transport::ImageTransport image_transport;
 	image_transport::Subscriber camera_subscription;
+	rclcpp::Subscription<sensor_msgs::msg::CameraInfo>::SharedPtr camera_info_subscription;
+	cv::Mat camera_matrix, distortion_coeffs;	// Camera parameters
 
 	Position location;
 	double rotation;
-
-	void move(double linear_velocity, double angular_velocity) {
-		auto message = geometry_msgs::msg::Twist();
-		message.linear.x = linear_velocity;
-		message.angular.z = angular_velocity;
-
-		publisher->publish(message);
-
-		RCLCPP_INFO(this->get_logger(), "Publishing: '%f.2' and %f.2", message.linear.x, message.angular.z);
-	}
 
 	void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg) {
 		// Process the received odometry data
@@ -86,29 +84,49 @@ class NemoController : public rclcpp::Node {
 
 		cv::aruco::detectMarkers(cv_ptr->image, ptr_aruco_dict, marker_corners, marker_ids);
 
-		// Print the detected markers
+		// Pose estimation
+		cv::Vec3d rvec, tvec;
+		std::vector<cv::Vec3d> rvecs, tvecs;
+
+		cv::Mat object_points(4, 1, CV_32FC3);
+
 		for (size_t i = 0; i < marker_ids.size(); i++) {
 			RCLCPP_INFO(this->get_logger(), "Detected marker: %d", marker_ids[i]);
+
+			// cv::solvePnP(object_points, marker_corners.at(i), camera_matrix, distortion_coeffs, rvec, tvec, false,
+			// 			 cv::SOLVEPNP_IPPE_SQUARE);
+
+			// rvecs.push_back(rvec);
+			// tvecs.push_back(tvec);
+
+			// RCLCPP_INFO(this->get_logger(), "rvec: %f, %f, %f", rvec[0], rvec[1], rvec[2]);
+			// RCLCPP_INFO(this->get_logger(), "tvec: %f, %f, %f", tvec[0], tvec[1], tvec[2]);
 		}
+
+		// TODO: Estimate world position
 	}
 
-	void moveToPosition(double x, double y) {
-		// Calculate the delta to target
-		double delta_x = x - location.x;
-		double delta_y = y - location.y;
+	void cameraInfoCallback(const sensor_msgs::msg::CameraInfo msg) {
+		// Obtain camera intrinsic parameters
+		camera_matrix = cv::Mat(3, 3, CV_64F, (void *) msg.k.data()).clone();
+		distortion_coeffs = cv::Mat(1, 5, CV_64F, (void *) msg.d.data()).clone();
+	}
 
-		// Calculate the angle and distance to target
-		double target_angle = atan2(delta_y, delta_x);
-		// double distance = sqrt(pow(delta_x, 2) + pow(delta_y, 2));
+	void moveToPosition(double target_x, double target_y, double target_yaw = 0.0) {
+		// Set the goal coordinates and yaw
+		geometry_msgs::msg::PoseStamped goal_pose;
+		goal_pose.header.frame_id = "map";
+		goal_pose.pose.position.x = target_x;
+		goal_pose.pose.position.y = target_y;
 
-		// Move robot
-		move(1.0, target_angle);
+		tf2::Quaternion quaternion;
+		quaternion.setRPY(0, 0, target_yaw);
+		goal_pose.pose.orientation = tf2::toMsg(quaternion);
 
-		// Update location
-		location.x = x;
-		location.y = y;
+		// Publish the goal
+		goal_publisher->publish(goal_pose);
 
-		RCLCPP_INFO(this->get_logger(), "Moving to tile: x=%f, y=%f", x, y);
+		RCLCPP_INFO(this->get_logger(), "Moving to position: x=%f, y=%f", target_x, target_y);
 	}
 
 	void toggleMagnet() {
@@ -126,14 +144,19 @@ class NemoController : public rclcpp::Node {
 		rotation = 0;
 
 		// Initialize publishers
-		publisher = this->create_publisher<geometry_msgs::msg::Twist>("/model/nemo/cmd_vel", 10);
+		goal_publisher = create_publisher<geometry_msgs::msg::PoseStamped>("goal_pose", 10);
 
 		// Initialize subscribers
 		// odometry_subscription = this->create_subscription<nav_msgs::msg::Odometry>(
 		// 	"/model/nemo/odometry", 10, std::bind(&NemoController::odomCallback, this, std::placeholders::_1));
 
-		camera_subscription = image_transport.subscribe(
-			"/camera", 1, std::bind(&NemoController::cameraCallback, this, std::placeholders::_1));
+		// camera_subscription = image_transport.subscribe(
+		// 	"/camera", 1, std::bind(&NemoController::cameraCallback, this, std::placeholders::_1));
+
+		// camera_info_subscription = this->create_subscription<sensor_msgs::msg::CameraInfo>(
+		// 	"/camera_info", 10, std::bind(&NemoController::cameraInfoCallback, this, std::placeholders::_1));
+
+		moveToPosition(2, 3, 1.57);
 
 		RCLCPP_INFO(this->get_logger(), "Initialized NEMO controller node");
 	}
@@ -141,7 +164,11 @@ class NemoController : public rclcpp::Node {
 
 int main(int argc, char *argv[]) {
 	rclcpp::init(argc, argv);
-	rclcpp::spin(std::make_shared<NemoController>());
+
+	auto node = std::make_shared<NemoController>();
+
+	rclcpp::spin(node);
+
 	rclcpp::shutdown();
 
 	return 0;
