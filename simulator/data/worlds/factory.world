@@ -1,18 +1,55 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
     <world name="default">
+        <!-- Ground -->
         <include>
             <uri>model://ground</uri>
         </include>
 
+        <!-- Warehouses -->
         <include>
             <uri>model://warehouse</uri>
+            <name>warehouse_pick</name>
+            <pose>-4.8 5.8 0 0 0 0</pose>
         </include>
 
+        <include>
+            <uri>model://warehouse</uri>
+            <name>warehouse_drop</name>
+            <pose>4.8 -5.8 0 0 0 3.14</pose>
+        </include>
+
+        <!-- Cases -->
+        <include>
+            <uri>model://case</uri>
+            <name>case_1</name>
+            <pose>-2.5 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://case</uri>
+            <name>case_2</name>
+            <pose>-4.0 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://case</uri>
+            <name>case_3</name>
+            <pose>-5.5 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://case</uri>
+            <name>case_4</name>
+            <pose>-7.0 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <!-- NEMO robot -->
         <include>
             <uri>model://nemo</uri>
         </include>
 
+        <!-- Sun light -->
         <light type="directional" name="sun">
             <cast_shadows>true</cast_shadows>
             <pose>0 0 10 0 0 0</pose>

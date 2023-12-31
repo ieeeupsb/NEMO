@@ -1,20 +1,18 @@
 <?xml version="1.0" ?>
 <sdf version="1.6">
-    <model name="warehouse">
-        <static>true</static>
-
+    <model name="case">
         <link name="link">
             <visual name="visual">
-                <!-- Sky blue color -->
+                <!-- Dark blue color -->
                 <material>
-                    <ambient>0.68 0.85 0.90</ambient>
+                    <ambient>0.60 0.75 0.95</ambient>
                     <diffuse>0 0 1</diffuse>
                     <specular>0.1 0.1 0.1 1</specular>
                 </material>
 
                 <geometry>
                     <mesh>
-                        <uri>model://warehouse/meshes/ratf_warehouse.stl</uri>
+                        <uri>model://case/meshes/SimpleCase - Case only.stl</uri>
                         <scale>0.01 0.01 0.01</scale>
                     </mesh>
                 </geometry>
@@ -23,7 +21,7 @@
             <collision name='collision'>
                 <geometry>
                     <box>
-                        <size>6.20 0.90 1.30</size>
+                        <size>0.60 0.90 0.65</size>
                     </box>
                 </geometry>
             </collision>
