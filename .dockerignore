@@ -1,0 +1,23 @@
+README.md
+.vscode
+.clang-format
+
+# Git
+.git/
+.gitignore
+
+# Direnv
+.direnv
+.envrc
+
+# Colcon
+build*
+install*
+log*
+
+# Nix
+flake.lock
+flake.nix
+
+# Docker
+Dockerfile
