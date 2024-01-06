@@ -3,13 +3,13 @@ from launch.actions import GroupAction
 from launch_ros.actions import Node, PushRosNamespace, SetParameter
 from launch_ros.descriptions import ParameterFile
 from nav2_common.launch import RewrittenYaml
+from ament_index_python.packages import get_package_share_directory
 
 import launch_ros
 import os
 
 
 def generate_launch_description():
-    pkg_share = launch_ros.substitutions.FindPackageShare(package="core").find("core")
     namespace = "nemo"
     params_file = "core/config/nav2_params.yaml"
     param_substitutions = {}
@@ -25,6 +25,7 @@ def generate_launch_description():
     )
 
     lifecycle_nodes = [
+        "map_server",
         "controller_server",
         "planner_server",
         "bt_navigator",
@@ -44,7 +45,17 @@ def generate_launch_description():
                                 name="map_server",
                                 executable="map_server",
                                 output="screen",
-                                parameters=[configured_params, {'yaml_filename': "core/maps/map.yaml"}],
+                                parameters=[
+                                    configured_params,
+                                    {
+                                        "yaml_filename": os.path.join(
+                                            get_package_share_directory("core"),
+                                            "launch",
+                                            "maps",
+                                            "factory.yaml",
+                                        )
+                                    },
+                                ],
                             ),
                             # Controller server
                             Node(
