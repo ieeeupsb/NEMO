@@ -7,4 +7,5 @@ docker run -it \
     -v /dev/dri:/dev/dri \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /var/run/docker.sock:/var/run/docker.sock \
+    -v "$(pwd)":/app \
     ros2:ubuntu-humble-desktop-full
