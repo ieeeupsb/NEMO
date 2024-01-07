@@ -5,7 +5,13 @@ NEMO is a robot designed to compete in [Robot@Factory 4.0](https://www.festivaln
 ## Build Dockerfile
 
 ```sh
-sudo docker build -t ros2:ubuntu-humble-desktop-full .
+docker build -t ros2:ubuntu-humble-desktop-full .
+```
+
+## Run Dockerfile
+
+```sh
+./docker_run.sh
 ```
 
 ## Dependencies

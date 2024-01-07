@@ -36,11 +36,11 @@ RUN apt-get update && apt-get install -y \
     # Nvidia dependencies
     mesa-utils
 
-# Copy files
-COPY . /app
-
 # Setting up nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
     ${NVIDIA_VISIBLE_DEVICES:-all}
 ENV NVIDIA_DRIVER_CAPABILITIES \
     ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+
+# Setting up Gazebo models path
+ENV IGN_GAZEBO_RESOURCE_PATH="/app/simulator/data/models"
