@@ -7,10 +7,15 @@
 
         <!-- Differential Drive Plugin -->
         <plugin name="ignition::gazebo::systems::DiffDrive" filename="libignition-gazebo-diff-drive-system.so">
+            <!-- Wheels -->
             <left_joint>left_wheel_joint</left_joint>
             <right_joint>right_wheel_joint</right_joint>
+
+            <!-- Kinematics -->
             <wheel_separation>2.0</wheel_separation>
             <wheel_radius>0.3</wheel_radius>
+
+            <!-- Output -->
             <odom_publish_frequency>2</odom_publish_frequency>
         </plugin>
 
@@ -19,7 +24,8 @@
             <render_engine>ogre2</render_engine>
         </plugin>
 
-        <link name='chassis'>
+        <!-- Chassis -->
+        <link name='base_link'>
             <inertial>
                 <mass>1.14395</mass>
 
@@ -75,6 +81,14 @@
             </collision>
         </link>
 
+        <!-- Footprint -->
+        <link name="base_footprint"/>
+
+        <joint name="base_joint" type="fixed">
+            <parent>base_link</parent>
+            <child>base_footprint</child>
+        </joint>
+
         <!-- Left Wheel -->
         <link name='left_wheel'>
             <pose>0.5 1.1 -0.2 1.57 0 0</pose>
@@ -118,7 +132,7 @@
 
         <joint name='left_wheel_joint' type='revolute'>
             <pose relative_to='left_wheel'/>
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>left_wheel</child>
             <axis>
                 <xyz expressed_in='__model__'>0 1 0</xyz>
@@ -172,7 +186,7 @@
 
         <joint name='right_wheel_joint' type='revolute'>
             <pose relative_to='right_wheel'/>
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>right_wheel</child>
             <axis>
                 <xyz expressed_in='__model__'>0 1 0</xyz>
@@ -211,7 +225,7 @@
         </link>
 
         <joint name="caster_wheel_joint" type="fixed">
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>caster_wheel</child>
             <axis>
                 <xyz>0.24 0 0</xyz>
@@ -268,7 +282,7 @@
         </link>
 
         <joint name="camera_joint" type="fixed">
-            <parent>chassis</parent>
+            <parent>base_link</parent>
             <child>camera_link</child>
             <axis>
                 <xyz>0 0.5 0</xyz>

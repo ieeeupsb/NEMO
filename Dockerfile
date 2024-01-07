@@ -24,8 +24,9 @@ RUN apt-get update && \
 RUN apt-get install -y python3 python3-pip && \ 
     pip install -U colcon-common-extensions
 
-# Installing Nav2
+# Installing navigation packages
 RUN apt install -y \
+    ros-humble-robot-localization \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup
 

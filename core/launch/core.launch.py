@@ -11,7 +11,7 @@ import os
 
 def generate_launch_description():
     namespace = "nemo"
-    params_file = "core/config/nav2_params.yaml"
+    params_file = "core/params/nav2_params.yaml"
     param_substitutions = {}
 
     configured_params = ParameterFile(
@@ -64,7 +64,7 @@ def generate_launch_description():
                                 executable="controller_server",
                                 output="screen",
                                 parameters=[
-                                    ParameterFile("core/config/controller.yaml"),
+                                    ParameterFile("core/params/controller.yaml"),
                                     {
                                         "FollowPath": {
                                             "plugin": "dwb_core::DWBLocalPlanner",
