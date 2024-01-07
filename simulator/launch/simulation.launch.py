@@ -4,22 +4,19 @@ from launch_ros.substitutions import FindPackageShare
 from launch.actions import DeclareLaunchArgument, LogInfo, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
-from launch.substitutions import PathJoinSubstitution, PythonExpression
+from launch.substitutions import PathJoinSubstitution, PythonExpression, Command
 
 import os
 
 
 def generate_launch_description():
-    sdf_path = "data/models/nemo/model.sdf"
-
-    with open(sdf_path, 'r') as f:
-        robot_description = f.read()
+    sdf_path = "data/models/nemo/model.xacro"
 
     # Robot State Publisher
     robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        parameters=[{'robot_description': robot_description}],
+        package="robot_state_publisher",
+        executable="robot_state_publisher",
+        parameters=[{"robot_description": Command(["xacro ", sdf_path])}],
     )
 
     # Joint State Publisher
@@ -27,7 +24,8 @@ def generate_launch_description():
         package="joint_state_publisher",
         executable="joint_state_publisher",
         name="joint_state_publisher",
-        arguments=[sdf_path],
+        arguments=["data/models/nemo/model.sdf"],
+        parameters=[{"use_sim_time": True}],
     )
 
     # Robot Localization
@@ -40,6 +38,9 @@ def generate_launch_description():
             "config/ekf.yaml",
             {"use_sim_time": True},
         ],
+        remappings=[
+            ('/odometry/filtered', '/odom'),
+        ]
     )
 
     # Rviz
@@ -62,6 +63,7 @@ def generate_launch_description():
             "/model/nemo/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry",
             "/camera@sensor_msgs/msg/Image@ignition.msgs.Image",
             "/camera_info@sensor_msgs/msg/CameraInfo@ignition.msgs.CameraInfo",
+            "/tf@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V",
         ],
     )
 
@@ -85,9 +87,9 @@ def generate_launch_description():
         [
             robot_state_publisher_node,
             joint_state_publisher_node,
-            # robot_localization_node,
+            robot_localization_node,
             rviz_node,
-            # ros_gz_bridge_node,
-            # ign_gazebo,
+            ros_gz_bridge_node,
+            ign_gazebo,
         ]
     )

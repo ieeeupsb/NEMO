@@ -47,6 +47,8 @@
         <!-- NEMO robot -->
         <include>
             <uri>model://nemo</uri>
+
+            <pose>0 0 0.5 0 0 0</pose>
         </include>
 
         <!-- Sun light -->
