@@ -32,7 +32,7 @@ ekf_filter_node:
     base_link_frame: base_link # Defaults to "base_link" ifunspecified
     world_frame: odom # Defaults to the value of odom_frame if unspecified
 
-    odom0: model/nemo/odometry
+    odom0: odom
     odom0_config:
       [
         true,
@@ -52,7 +52,7 @@ ekf_filter_node:
         false,
       ]
 
-    imu0: model/nemo/imu
+    imu0: imu
     imu0_config:
       [
         false,

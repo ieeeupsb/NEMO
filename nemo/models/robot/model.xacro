@@ -165,6 +165,18 @@
         <link name="caster_wheel">
             <pose>-0.8 0 -0.4 0 0 0</pose>
 
+            <inertial>
+                <mass>2</mass>
+                <inertia>
+                    <ixx>0.145833</ixx>
+                    <ixy>0</ixy>
+                    <ixz>0</ixz>
+                    <iyy>0.145833</iyy>
+                    <iyz>0</iyz>
+                    <izz>0.125</izz>
+                </inertia>
+            </inertial>
+
             <visual name='visual'>
                 <geometry>
                     <sphere>
@@ -204,7 +216,7 @@
         <link name="lidar_link">
             <pose>${base_width/2} 0 0.5 0 0 0</pose>
 
-            <sensor name='gpu_lidar' type='gpu_lidar'>
+            <sensor name='scan' type='gpu_lidar'>
                 <ray>
                     <scan>
                         <horizontal>
