@@ -5,11 +5,54 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# find dependencies
+# Find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(nav2_msgs REQUIRED)
+find_package(nav2_util REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_geometry_msgs REQUIRED)
+find_package(image_transport REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+link_directories(${OpenCV_LIBRARY_DIRS})
+add_definitions(${OpenCV_DEFINITIONS})
+
+# Add each executable (node)
+add_executable(nemo_controller src/nemo_controller.cpp)
+add_executable(navigation src/navigation.cpp)
+
+# Add dependencies for each executable
+ament_target_dependencies(
+  nemo_controller 
+  rclcpp
+  rclcpp_action
+  geometry_msgs 
+  nav_msgs 
+  nav2_msgs
+  tf2
+  tf2_geometry_msgs
+  image_transport 
+  cv_bridge
+  OpenCV
+)
+
+ament_target_dependencies(
+  navigation 
+  rclcpp
+  rclcpp_action
+  geometry_msgs 
+  nav2_msgs
+  nav2_util
+  image_transport 
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -22,6 +65,18 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+target_include_directories(nemo_controller PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
+target_compile_features(nemo_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+
+install(TARGETS 
+  navigation
+  nemo_controller
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 
 install(
   DIRECTORY src launch rviz config worlds  
