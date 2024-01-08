@@ -27,6 +27,7 @@ RUN apt-get install -y python3 python3-pip && \
 # Installing navigation packages
 RUN apt install -y \
     ros-humble-robot-localization \
+    ros-humble-joint-state-publisher \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup
 
@@ -40,8 +41,11 @@ RUN apt-get update && apt-get install -y \
 # Setting up nvidia-container-runtime
 ENV NVIDIA_VISIBLE_DEVICES \
     ${NVIDIA_VISIBLE_DEVICES:-all}
+
 ENV NVIDIA_DRIVER_CAPABILITIES \
     ${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
 
 # Setting up Gazebo models path
-ENV IGN_GAZEBO_RESOURCE_PATH="/app/simulator/data/models"
+ENV IGN_GAZEBO_RESOURCE_PATH="/app/nemo/models"
+
+RUN echo "source /opt/ros/humble/local_setup.bash" >> /root/.bashrc

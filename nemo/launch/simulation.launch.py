@@ -1,22 +1,19 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-from launch.actions import DeclareLaunchArgument, LogInfo, IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.conditions import IfCondition
-from launch.substitutions import PathJoinSubstitution, PythonExpression, Command
-
-import os
+from launch.substitutions import PathJoinSubstitution, Command
 
 
 def generate_launch_description():
-    sdf_path = "data/models/nemo/model.xacro"
-
     # Robot State Publisher
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        parameters=[{"robot_description": Command(["xacro ", sdf_path])}],
+        parameters=[
+            {"robot_description": Command(["xacro ", "nemo/models/robot/model.xacro"])}
+        ],
     )
 
     # Joint State Publisher
@@ -24,8 +21,10 @@ def generate_launch_description():
         package="joint_state_publisher",
         executable="joint_state_publisher",
         name="joint_state_publisher",
-        arguments=["data/models/nemo/model.sdf"],
-        parameters=[{"use_sim_time": True}],
+        arguments=["nemo/models/robot/model.sdf"],
+        parameters=[
+            {"use_sim_time": True},
+        ],
     )
 
     # Robot Localization
@@ -35,12 +34,12 @@ def generate_launch_description():
         name="ekf_filter_node",
         output="screen",
         parameters=[
-            "config/ekf.yaml",
+            "nemo/config/ekf.yaml",
             {"use_sim_time": True},
         ],
         remappings=[
-            ('/odometry/filtered', '/odom'),
-        ]
+            ("/odometry/filtered", "/odom"),
+        ],
     )
 
     # Rviz
@@ -49,7 +48,7 @@ def generate_launch_description():
         executable="rviz2",
         name="rviz2",
         output="screen",
-        arguments=["-d", "rviz/urdf_config.rviz"],
+        arguments=["-d", "nemo/rviz/urdf_config.rviz"],
     )
 
     # ROS Gazebo Bridge
@@ -59,8 +58,10 @@ def generate_launch_description():
         name="ros_gz_bridge",
         output="screen",
         arguments=[
-            "/model/nemo/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
-            "/model/nemo/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry",
+            "/model/robot/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist",
+            "/model/robot/odometry@nav_msgs/msg/Odometry@ignition.msgs.Odometry",
+            "/lidar@sensor_msgs/msg/LaserScan@ignition.msgs.LaserScan",
+            "/lidar@sensor_msgs/msg/PointCloud2@ignition.msgs.PointCloudPacked",
             "/camera@sensor_msgs/msg/Image@ignition.msgs.Image",
             "/camera_info@sensor_msgs/msg/CameraInfo@ignition.msgs.CameraInfo",
             "/tf@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V",
@@ -79,14 +80,14 @@ def generate_launch_description():
             ),
         ),
         launch_arguments={
-            "gz_args": "data/worlds/factory.world",
+            "gz_args": "nemo/worlds/factory.world",
         }.items(),
     )
 
     return LaunchDescription(
         [
-            robot_state_publisher_node,
             joint_state_publisher_node,
+            robot_state_publisher_node,
             robot_localization_node,
             rviz_node,
             ros_gz_bridge_node,
