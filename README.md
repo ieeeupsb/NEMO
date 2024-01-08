@@ -20,7 +20,6 @@ Inside the root directory, run the following commands:
 
 ```sh
 sudo apt install ros-humble-desktop-full python3 python3-pip
-pip install -r requirements.txt
 ```
 
 ## Syntax highlighting for VSCode
@@ -28,7 +27,7 @@ pip install -r requirements.txt
 Inside the root directory, run the following command:
 
 ```sh
-colcon build --build-base build_  --install-base install_ --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+colcon --log-base log_ build --build-base build_  --install-base install_  --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 ```
 
 <!-- Also make sure the serial port `/dev/tty1` is available on your system. -->
@@ -59,21 +58,16 @@ source install/setup.bash
 
 ## Running the program
 
-### Robot
-
-Inside the root directory, run the following command:
-
-```sh
-ros2 launch core core.launch.xml
-```
-
 ### Simulation
 
-Inside the simulation directory, run the following commands:
+```sh
+ros2 launch nemo simulation.launch.py
+```
+
+### Navigation
 
 ```sh
-export IGN_GAZEBO_RESOURCE_PATH="$(pwd)/data/models"
-ros2 launch launch/simulation.launch.xml
+ros2 launch nemo navigation.launch.py
 ```
 
 ## Testing
@@ -82,27 +76,11 @@ To test the robot's movement, there are a few messages you can publish:
 
 ### Altering the robot's velocity
 
-```
-ros2 topic pub velocity_callback geometry_msgs/msg/Point "{x: 0.0, y: 0.0}"
+```sh
+ros2 topic pub /model/robot/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 3.0, y: 0.0, z: 0.0}}"
 ```
 
 In this message, x represents the new linear velocity while y represents the new angular velocity of the robot
-
-### Moving to a tile
-
-```
-ros2 topic pub nemo_move_to_tile std_msgs/msg/Int32 "data: id"
-```
-
-In this message, id represents the end tile of the robot (from left to right, top to bottom, starting from 0)
-
-## To-do
-
-- [ ] Movement to specified coordinates
-- [ ] Movement to specified tile
-- [ ] Location
-- [ ] Pathfinding
-- [ ] Pick-up
 
 ## Related work
 
@@ -113,3 +91,19 @@ In this message, id represents the end tile of the robot (from left to right, to
 - https://answers.ros.org/question/403966/how-to-initialize-image_transport-using-rclcpp/
 - https://github.com/ros-perception/image_transport_tutorials
 - https://github.com/JMU-ROBOTICS-VIVA/ros2_aruco/tree/main
+- https://docs.ros.org/en/humble/Tutorials/Intermediate/Writing-an-Action-Server-Client/Cpp.html
+- https://automaticaddison.com/sensor-fusion-using-the-robot-localization-package-ros-2/
+- https://automaticaddison.com/navigation-and-slam-using-the-ros-2-navigation-stack/
+- https://navigation.ros.org/setup_guides/transformation/setup_transforms.html
+
+```sh
+xacro nemo/models/robot/model.xacro > nemo/models/robot/model.sdf
+```
+
+```sh
+ros2 topic pub /navigate_to_pose geometry_msgs/PoseStamped "{header: {stamp: {sec: 0}, frame_id: 'map'}, pose: {position: {x: 5.0, y: -2.0, z: 0.0}, orientation: {w: 1.0}}}"
+```
+
+```sh
+ros2 run tf2_tools view_frames -o frames
+```
