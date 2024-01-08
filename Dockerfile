@@ -31,6 +31,11 @@ RUN apt install -y \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup
 
+RUN apt install -y \
+    ros-humble-rmw-cyclonedds-cpp
+
+ENV RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
+
 # Installing the Ubuntu dependencies
 RUN apt-get update && apt-get install -y \
     # Dev dependencies
