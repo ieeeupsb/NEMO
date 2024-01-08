@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(nav2_msgs REQUIRED)
+find_package(nav2_util REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -24,8 +25,11 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 link_directories(${OpenCV_LIBRARY_DIRS})
 add_definitions(${OpenCV_DEFINITIONS})
 
+# Add each executable (node)
 add_executable(nemo_controller src/nemo_controller.cpp)
+add_executable(navigation src/navigation.cpp)
 
+# Add dependencies for each executable
 ament_target_dependencies(
   nemo_controller 
   rclcpp
@@ -40,12 +44,23 @@ ament_target_dependencies(
   OpenCV
 )
 
+ament_target_dependencies(
+  navigation 
+  rclcpp
+  rclcpp_action
+  geometry_msgs 
+  nav2_msgs
+  nav2_util
+  image_transport 
+)
+
 target_include_directories(nemo_controller PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(nemo_controller PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 install(TARGETS 
+  navigation
   nemo_controller
   DESTINATION lib/${PROJECT_NAME}
 )
