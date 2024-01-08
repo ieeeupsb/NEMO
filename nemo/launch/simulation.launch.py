@@ -12,7 +12,7 @@ def generate_launch_description():
         package="robot_state_publisher",
         executable="robot_state_publisher",
         parameters=[
-            {"robot_description": open("nemo/models/robot/model.sdf").read()},
+            {"robot_description": Command(["xacro ", "nemo/models/robot/model.xacro"])},
             {"use_sim_time": True},
         ],
     )
@@ -65,6 +65,7 @@ def generate_launch_description():
             "/lidar@sensor_msgs/msg/PointCloud2@ignition.msgs.PointCloudPacked",
             "/camera@sensor_msgs/msg/Image@ignition.msgs.Image",
             "/camera_info@sensor_msgs/msg/CameraInfo@ignition.msgs.CameraInfo",
+            "/tf@tf2_msgs/msg/TFMessage@ignition.msgs.Pose_V",
             "/world/default/model/robot/joint_state@sensor_msgs/msg/JointState@ignition.msgs.Model",
         ],
         remappings=[
