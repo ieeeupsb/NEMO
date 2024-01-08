@@ -76,8 +76,8 @@ To test the robot's movement, there are a few messages you can publish:
 
 ### Altering the robot's velocity
 
-```
-ros2 topic pub velocity_callback geometry_msgs/msg/Point "{x: 0.0, y: 0.0}"
+```sh
+ros2 topic pub /model/robot/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 3.0, y: 0.0, z: 0.0}}"
 ```
 
 In this message, x represents the new linear velocity while y represents the new angular velocity of the robot
@@ -97,6 +97,13 @@ In this message, x represents the new linear velocity while y represents the new
 - https://navigation.ros.org/setup_guides/transformation/setup_transforms.html
 
 ```sh
-ros2 run tf2_ros static_transform_publisher 0 0 0 0 0 0 map odom &
-ros2 topic pub /goal_pose geometry_msgs/PoseStamped "{header: {stamp: {sec: 0}, frame_id: 'map'}, pose: {position: {x: 5.0, y: -2.0, z: 0.0}, orientation: {w: 1.0}}}"
+xacro nemo/models/robot/model.xacro > nemo/models/robot/model.sdf
+```
+
+```sh
+ros2 topic pub /navigate_to_pose geometry_msgs/PoseStamped "{header: {stamp: {sec: 0}, frame_id: 'map'}, pose: {position: {x: 5.0, y: -2.0, z: 0.0}, orientation: {w: 1.0}}}"
+```
+
+```sh
+ros2 run tf2_tools view_frames -o frames
 ```
