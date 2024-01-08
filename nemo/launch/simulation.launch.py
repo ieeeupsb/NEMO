@@ -94,6 +94,7 @@ def generate_launch_description():
             joint_state_publisher_node,
             robot_state_publisher_node,
             robot_localization_node,
+            costmap_node,
             rviz_node,
             ros_gz_bridge_node,
             ign_gazebo,
