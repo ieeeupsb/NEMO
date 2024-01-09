@@ -4,8 +4,6 @@
   <img width="300" src="nemo.webp" />
 </p>
 
-Eduardo_Correia_+_Luis_Lucas_+_Mario_Travassos
-
 NEMO is a robot designed to compete in [Robot@Factory 4.0 challenge](https://www.festivalnacionalrobotica.pt/2023/en/robotfactory-4-0-en/).
 
 This project was developed in the context of *Assignment 4* of [Intelligent Robotics](https://sigarra.up.pt/feup/en/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=518841) classes at [FEUP](https://sigarra.up.pt/feup/en/web_page.Inicial).
