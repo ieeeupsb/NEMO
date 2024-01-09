@@ -1,66 +1,130 @@
 # NEMO 🐠
 
-NEMO is a robot designed to compete in [Robot@Factory 4.0](https://www.festivalnacionalrobotica.pt/2023/en/robotfactory-4-0-en/) challenge
+<p align="center">
+  <img width="300" src="nemo.webp" />
+</p>
 
-## Build Dockerfile
+Eduardo_Correia_+_Luis_Lucas_+_Mario_Travassos
+
+NEMO is a robot designed to compete in [Robot@Factory 4.0 challenge](https://www.festivalnacionalrobotica.pt/2023/en/robotfactory-4-0-en/).
+
+This project was developed in the context of *Assignment 4* of [Intelligent Robotics](https://sigarra.up.pt/feup/en/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=518841) classes at [FEUP](https://sigarra.up.pt/feup/en/web_page.Inicial).
+
+## Group (A34_Morn_Gr_H)
+ 
+- Eduardo Correia
+- Luís Lucas 
+- Mário Travassos
+
+## Technologies
+
+- Ubuntu 22.04
+- ROS Humble Hawkbill
+- Gazebo Fortress
+- RViz2
+- Navigation2  
+
+## Folder structure
+
+```sh
+.
+├── Dockerfile                  # Dockerfile with necessary dependencies
+├── docker-run.sh               # Script to run the Docker container
+├── docs                        # Documentation 
+├── nemo                        # Core package
+│   ├── CMakeLists.txt  
+│   ├── package.xml             
+│   ├── config                  # Configuration files 
+│   ├── launch                  # Launch files
+│   ├── maps                    # Map files
+│   ├── models                  # Gazebo models
+│   ├── README.md               # This file
+│   ├── rviz                    # RViz configuration files
+│   ├── src                     # Source code
+│   └── worlds                  # Gazebo world files
+└── README.md
+```
+
+## Setup
+
+To run the project, you can either use Docker or install the dependencies on your system.
+
+### Docker
+
+#### Build Dockerfile
 
 ```sh
 docker build -t ros2:ubuntu-humble-desktop-full .
 ```
 
-## Run Dockerfile
+#### Run Dockerfile
+
+To run the Dockerfile, run the following script:
 
 ```sh
 ./docker_run.sh
 ```
 
-## Dependencies
-
-Inside the root directory, run the following commands:
+To connect to an existing container, use:
 
 ```sh
-sudo apt install ros-humble-desktop-full python3 python3-pip
+docker exec -it <container_id> bash
 ```
 
-## Syntax highlighting for VSCode
+You can get the `<container_id>` by running `docker ps`:
 
-Inside the root directory, run the following command:
+### Local install
+
+Assuming you are using Ubuntu 22.04, you need to install the following dependencies:
 
 ```sh
-colcon --log-base log_ build --build-base build_  --install-base install_  --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+# Installing ROS2 Humble
+sudo apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ros-humble-desktop-full
+
+# Installing colcon
+sudo apt-get install -y python3 python3-pip && \ 
+    pip install -U colcon-common-extensions
+
+# Installing navigation packages
+sudo apt install -y \
+    ros-humble-robot-localization \
+    ros-humble-joint-state-publisher \
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup
+
+# Installing Cyclone DDS
+sudo apt install -y \
+    ros-humble-rmw-cyclonedds-cpp
+
+export RMW_IMPLEMENTATION="rmw_cyclonedds_cpp"
+
+# Setting up Gazebo models path
+export IGN_GAZEBO_RESOURCE_PATH="$(pwd)/nemo/models"
+
+echo "source /opt/ros/humble/local_setup.bash" >> ~/.bashrc
 ```
 
-<!-- Also make sure the serial port `/dev/tty1` is available on your system. -->
+## Launching
 
-# Sourcing ROS 2:
-
-Run the following command:
-
-```sh
-source /opt/ros/humble/local_setup.bash
-```
-
-## Building
-
-Inside the root directory, run the following command:
+To launch the project, you first need to build with it `colcon`, from the root directory:
 
 ```sh
 colcon build
 ```
 
-## Sourcing Setup file
-
-Inside the root directory, run the following command:
+Then, you need to source the `setup.bash` file:
 
 ```sh
 source install/setup.bash
 ```
 
-## Running the program
+Now to run the necessary nodes, you can run the following commands in separate terminals:
 
 ### Simulation
 
-```sh
+```sh   
 ros2 launch nemo simulation.launch.py
 ```
 
@@ -68,42 +132,4 @@ ros2 launch nemo simulation.launch.py
 
 ```sh
 ros2 launch nemo navigation.launch.py
-```
-
-## Testing
-
-To test the robot's movement, there are a few messages you can publish:
-
-### Altering the robot's velocity
-
-```sh
-ros2 topic pub /model/robot/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 3.0, y: 0.0, z: 0.0}}"
-```
-
-In this message, x represents the new linear velocity while y represents the new angular velocity of the robot
-
-## Related work
-
-- https://github.com/rfzeg/rtab_dumpster
-- https://github.com/plusk01/aruco_localization
-- https://medium.com/@geetkal67/how-to-subscribe-to-ignition-gazebo-topics-using-ros2-8bcff7a0242e
-- https://medium.com/@junbs95/code-completion-and-debugging-for-ros2-in-vscode-a4ede900d979
-- https://answers.ros.org/question/403966/how-to-initialize-image_transport-using-rclcpp/
-- https://github.com/ros-perception/image_transport_tutorials
-- https://github.com/JMU-ROBOTICS-VIVA/ros2_aruco/tree/main
-- https://docs.ros.org/en/humble/Tutorials/Intermediate/Writing-an-Action-Server-Client/Cpp.html
-- https://automaticaddison.com/sensor-fusion-using-the-robot-localization-package-ros-2/
-- https://automaticaddison.com/navigation-and-slam-using-the-ros-2-navigation-stack/
-- https://navigation.ros.org/setup_guides/transformation/setup_transforms.html
-
-```sh
-xacro nemo/models/robot/model.xacro > nemo/models/robot/model.sdf
-```
-
-```sh
-ros2 topic pub /navigate_to_pose geometry_msgs/PoseStamped "{header: {stamp: {sec: 0}, frame_id: 'map'}, pose: {position: {x: 5.0, y: -2.0, z: 0.0}, orientation: {w: 1.0}}}"
-```
-
-```sh
-ros2 run tf2_tools view_frames -o frames
 ```
