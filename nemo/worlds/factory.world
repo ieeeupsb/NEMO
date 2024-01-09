@@ -1,0 +1,82 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+    <world name="default">
+        <!-- Ground -->
+        <include>
+            <uri>model://ground</uri>
+        </include>
+
+        <!-- Warehouses -->
+        <include>
+            <uri>model://warehouse</uri>
+            <name>warehouse_incoming</name>
+            <pose>-4.8 5.8 0 0 0 0</pose>
+        </include>
+
+        <include>
+            <uri>model://warehouse</uri>
+            <name>warehouse_output</name>
+            <pose>4.8 -5.8 0 0 0 3.14</pose>
+        </include>
+
+        <!-- Machines -->
+        <include>
+            <uri>model://machine</uri>
+            <name>machine_a</name>
+            <pose>-3.5 -0.75 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://machine</uri>
+            <name>machine_b</name>
+            <pose>3.5 0.75 0 0 0 1.57</pose>
+        </include>
+
+        <!-- Cases -->
+        <include>
+            <uri>model://case</uri>
+            <name>case_1</name>
+            <pose>-2.5 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://case</uri>
+            <name>case_2</name>
+            <pose>-4.0 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://case</uri>
+            <name>case_3</name>
+            <pose>-5.5 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <include>
+            <uri>model://case</uri>
+            <name>case_4</name>
+            <pose>-7.0 5.4 0 0 0 1.57</pose>
+        </include>
+
+        <!-- NEMO robot -->
+        <include>
+            <uri>model://robot</uri>
+
+            <pose>0 0 0.5 0 0 0</pose>
+        </include>
+
+        <!-- Sun light -->
+        <light type="directional" name="sun">
+            <cast_shadows>true</cast_shadows>
+            <pose>0 0 10 0 0 0</pose>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+            <attenuation>
+                <range>1000</range>
+                <constant>0.9</constant>
+                <linear>0.01</linear>
+                <quadratic>0.001</quadratic>
+            </attenuation>
+            <direction>-0.5 0.1 -0.9</direction>
+        </light>
+    </world>
+</sdf>
