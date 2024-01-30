@@ -1,0 +1,13 @@
+# options: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+IndentWidth: 4
+UseTab: Always
+TabWidth: 4
+# Does (int) x instead of (int)x
+SpaceAfterCStyleCast: true
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+AlignTrailingComments: true
+SpacesBeforeTrailingComments: 3
+# Use \n instead of \r\n
+UseCRLF: false
+ColumnLimit: 120
